@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Factorial Calculator</title>
+	<script src="https://unpkg.com/mathjs@9.5.0/lib/browser/math.js"></script>
+</head>
+
+<body>
+	<script>
+		function calc() {
+			variable = document.getElementById('variable');
+			val = variable.valueAsNumber;
+
+			if (Number.isInteger(val) && Math.sign(val) != -1) {
+				res = math.factorial(val);
+				document.getElementById("result").innerHTML = '<p style="color:blue">Result: </p>' + res;
+			} else {
+				console.log("err");
+				document.getElementById("result").innerHTML = '<p style="color:red">ERROR : Please put a non-negative integer value!</p>';
+			}
+		}
+	</script>
+	<form>
+		<div style="float:left">
+			<label for="number">Enter a non-negative integer: </label>
+			<input type="number" id="variable">
+		</div>
+		<div style="margin-left: 350px">
+			<input type="button" value="Calculate Factorial" onclick="calc()"><br><br>
+		</div>
+	</form>
+
+	<div id="result"></div>
+</body>
+
+</html>
