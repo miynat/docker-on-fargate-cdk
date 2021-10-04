@@ -1,58 +1,59 @@
+# Sample Factorial Calculator with AWS Cloud Development Kit (CDK)
 
-# Welcome to your CDK Python project!
+A simple Dockerized application calculating the factorial of non-negative integer numbers.
 
-This is a blank project for Python development with CDK.
+This application is hosted on Fargate behind a Load Balancer.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Among all the alternatives like ECS, EKS, and Fargate, I chose Fargate for hosting this application in order to continue the recent Serverless approach as in other project *serverless-cdk*
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+Apparently, AWS provides a module called [ecs-patterns](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-ecs-patterns-readme.html) (in addition to the generic [ecs](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-ecs-readme.html) module) which is providing some boilerplate functions to cover a couple of popular use cases.
+So I used that module to setup the Fargate service.
 
-To manually create a virtualenv on MacOS and Linux:
+The whole project is developed by using AWS Cloud Development Kit (CDK), and the calculator is implemented as a minimal Javascript application.
+
+### Prerequisites:
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html)
+* An AWS user with Administrator Access:  
+Run `aws configure` with the credentials of this user before running the project
+* [Node.js](https://github.com/nodesource/distributions/blob/master/README.md)
+* AWS CDK Toolkit:
+```
+npm install -g aws-cdk
+```
+* Python3  
+
+<br>In order to test this project locally, follow those steps:
+
+```
+$ git checkout https://github.com/miynat/docker-on-fargate-cdk.git
+$ cd serverless-cdk
+```
+
+Create a Python virtualenv, and activate it:
 
 ```
 $ python3 -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
 $ source .venv/bin/activate
 ```
 
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
+Then install the required dependencies.
 
 ```
 $ pip install -r requirements.txt
 ```
 
-At this point you can now synthesize the CloudFormation template for this code.
+Deploy the code to AWS with CDK:
 
 ```
-$ cdk synth
+$ cdk deploy --require-approval never
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+CDK will build our Docker image, will push the produced Docker image onto Amazon ECR (Amazon Elastic Container Registry), and then deploy the Fargate service by using the image from ECR.
 
-## Useful commands
+Once the project is deployed on AWS, we will see the URL of the Load Balancer of our service in the output:
 
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
+![CDK Output](images/cdk_output.jpg)
 
-Enjoy!
+Copy that URL, paste it on a browser, and you will see our mini Factorial Calculator program:
+
+![Factorial Calculator](images/factorial_calculator.jpg)
